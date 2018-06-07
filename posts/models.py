@@ -14,6 +14,8 @@ class Post(models.Model):
     text = models.CharField(max_length=3750)
     date = models.DateTimeField('published')
     user = models.ForeignKey(User, on_delete=models.SET(get_user_model))
+    def __str__(self):
+        return self.title
 
 
 class Comment(models.Model):
@@ -23,3 +25,5 @@ class Comment(models.Model):
     score = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     text = models.CharField(max_length=255)
     display = models.BooleanField()
+    def __str__(self):
+        return "From {}; --> {}".format(self.full_name, self.post)
