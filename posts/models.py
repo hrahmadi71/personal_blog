@@ -2,8 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
+from datetime import datetime
 
 # Create your models here.
+
+class Token(models.Model):
+    token = models.CharField(max_length=48)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    def __str__(self):
+        return "{}'s token".format(self.user)
 
     
 def get_sentinel_user():
@@ -16,7 +23,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET(get_user_model))
     def __str__(self):
         return self.title
-
+ 
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -24,6 +31,7 @@ class Comment(models.Model):
     email = models.EmailField(max_length=50)
     score = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     text = models.CharField(max_length=255)
+    date = models.DateTimeField(name='date', default=datetime.now())
     display = models.BooleanField()
     def __str__(self):
         return "From {}; --> {}".format(self.full_name, self.post)
